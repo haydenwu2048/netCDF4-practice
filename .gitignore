@@ -127,3 +127,16 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# User-specific stuff:
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/dictionaries
+.idea/vcs.xml
+.idea/jsLibraryMappings.xml
+
+# Other ignored stuff:
+.idea/misc.xml
+.idea/modules.xml
+.idea/netCDF4-practice.iml
+.idea/inspectionProfiles/profiles_settings.xml
