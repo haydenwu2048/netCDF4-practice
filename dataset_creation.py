@@ -24,3 +24,34 @@ root_group.close()
 # 6466 3d34 2e39 2e30 2c68 6466 353d 312e
 # 3132 2e32 0011 0000 0000 0000 0000 0000
 # 0000 0000 0000 0000 0000 0038 945b 4d
+
+root_group = Dataset("test.nc", "a")
+forecast_grp = root_group.createGroup("forecasts")
+analyze_grp = root_group.createGroup("analyses")
+# print(root_group.groups)  # Only NETCDF4 formatted files support Groups
+
+# the result of print(root_group.groups)
+# {'forecasts': <class 'netCDF4._netCDF4.Group'>
+# group /forecasts:
+#     dimensions(sizes):
+#     variables(dimensions):
+#     groups: , 'analyses': <class 'netCDF4._netCDF4.Group'>
+# group /analyses:
+#     dimensions(sizes):
+#     variables(dimensions):
+#     groups: }
+
+forecast_grp1 = root_group.createGroup("/forecasts/model1")
+forecast_grp2 = root_group.createGroup("/forecasts/model2")
+print(root_group.groups)
+
+# the result
+# {'forecasts': <class 'netCDF4._netCDF4.Group'>
+# group /forecasts:
+#     dimensions(sizes):
+#     variables(dimensions):
+#     groups: model1, model2, 'analyses': <class 'netCDF4._netCDF4.Group'>
+# group /analyses:
+#     dimensions(sizes):
+#     variables(dimensions):
+#     groups: }
