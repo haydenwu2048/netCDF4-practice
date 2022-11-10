@@ -1,4 +1,5 @@
 from netCDF4 import Dataset
+import time as itime
 
 root_group = Dataset("test.nc", "w", format="NETCDF4")
 print(root_group.data_model)  # NETCDF4
@@ -43,7 +44,10 @@ analyze_grp = root_group.createGroup("analyses")
 
 forecast_grp1 = root_group.createGroup("/forecasts/model1")
 forecast_grp2 = root_group.createGroup("/forecasts/model2")
-print(root_group.groups)
+
+
+# print(root_group.groups)
+
 
 # the result
 # {'forecasts': <class 'netCDF4._netCDF4.Group'>
@@ -55,3 +59,54 @@ print(root_group.groups)
 #     dimensions(sizes):
 #     variables(dimensions):
 #     groups: }
+
+# print(root_group)
+
+
+def walk_tree(t):
+    yield t.groups.values()
+    for value in t.groups.values():
+        yield from walk_tree(value)
+
+
+for children in walk_tree(root_group):
+    for child in children:
+        print(child)
+
+level = root_group.createDimension("level", None)  # create an unlimited dimension (a dimension that can be appended to)
+time = root_group.createDimension("time", None)
+latitude = root_group.createDimension("lat", 73)  # 73 is the size of the dimension
+longitude = root_group.createDimension("lon", 144)
+
+print(root_group.dimensions)
+print(time.isunlimited())
+
+for dimension_object in root_group.dimensions.values():
+    print(dimension_object)
+
+times = root_group.createVariable("time", "f8", ("time",))  # the tuple argument here is for dimensions
+levels = root_group.createVariable("level", "i4", ("level",))
+latitudes = root_group.createVariable("lat", "f4", ("lat",))
+longitudes = root_group.createVariable("lon", "f4", ("lon",))
+
+temp = root_group.createVariable("temp", "f4", ("time", "level", "lat", "lon"))
+# the above assignment means, create a variable named temp,
+# the variable datatype is f4 which represents 32-bit floating point
+# the variable's dimensions are ("time", "level", "lat", "lon"), which were already defined previously
+# The dimensions themselves are usually also defined as variables, called coordinate variables
+print(temp)
+
+# The following two examples are netCDF global attributes,
+# which belong to and provide information for the entire dataset
+root_group.description = "some test script"
+root_group.history = "Created" + itime.ctime(itime.time())
+# The following two examples are netCDF variable attributes, which set value to variable instances
+latitudes.units = "degrees north"
+longitudes.units = "degrees east"
+
+# To retrieve the names of all the netCDF instances
+for name in root_group.ncattrs():
+    print("Global attr {} = {}".format(name, getattr(root_group, name)))
+
+print(root_group.__dict__)
+
